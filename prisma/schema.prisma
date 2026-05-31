@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
   tickets   Ticket[]
@@ -19,12 +19,12 @@ model User {
 }
 
 model Ticket {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          Int      @id @default(autoincrement())
   description String
   channel     String
   status      String
   priority    String
-  userId      String?  @db.Uuid
+  userId      Int?
   user        User?    @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

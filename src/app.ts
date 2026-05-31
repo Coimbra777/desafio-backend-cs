@@ -1,4 +1,5 @@
 import express from "express";
+import { errorHandler } from "./middlewares/error-handler";
 import { ticketRoutes } from "./routes/ticket.routes";
 import { userRoutes } from "./routes/user.routes";
 
@@ -12,5 +13,6 @@ app.get("/health", (req, res) => {
 
 app.use("/tickets", ticketRoutes);
 app.use("/users", userRoutes);
+app.use(errorHandler);
 
 export { app };

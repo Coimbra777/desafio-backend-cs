@@ -1,73 +1,73 @@
-import { Request, Response } from "express";
-import { AppError, userService } from "../services/user.service";
+import { NextFunction, Request, Response } from "express";
+import { userService } from "../services/user.service";
 
 type UserParams = {
   id: string;
 };
 
 class UserController {
-  async create(request: Request, response: Response) {
+  async create(request: Request, response: Response, next: NextFunction) {
     try {
       const user = await userService.create(request.body);
 
       return response.status(201).json(user);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async findAll(_request: Request, response: Response) {
+  async findAll(_request: Request, response: Response, next: NextFunction) {
     try {
       const users = await userService.findAll();
 
       return response.status(200).json(users);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async findById(request: Request<UserParams>, response: Response) {
+  async findById(
+    request: Request<UserParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
-      const user = await userService.findById(request.params.id);
+      const user = await userService.findById(Number(request.params.id));
 
       return response.status(200).json(user);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async update(request: Request<UserParams>, response: Response) {
+  async update(
+    request: Request<UserParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
-      const user = await userService.update(request.params.id, request.body);
+      const user = await userService.update(Number(request.params.id), request.body);
 
       return response.status(200).json(user);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async delete(request: Request<UserParams>, response: Response) {
+  async delete(
+    request: Request<UserParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
-      await userService.delete(request.params.id);
+      await userService.delete(Number(request.params.id));
 
       return response.status(200).json({
         message: "User deleted successfully.",
       });
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
-  }
-
-  private handleError(error: unknown, response: Response) {
-    if (error instanceof AppError) {
-      return response.status(error.statusCode).json({
-        message: error.message,
-      });
-    }
-
-    return response.status(500).json({
-      message: "Internal server error.",
-    });
   }
 }
 

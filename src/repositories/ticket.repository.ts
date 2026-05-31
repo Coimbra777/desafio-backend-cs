@@ -5,7 +5,7 @@ type CreateTicketData = {
   channel: string;
   priority: string;
   status: string;
-  userId?: string;
+  userId?: number;
 };
 
 type UpdateTicketStatusData = {
@@ -43,7 +43,7 @@ class TicketRepository {
     });
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
     return prisma.ticket.findUnique({
       where: { id },
       include: {
@@ -54,7 +54,7 @@ class TicketRepository {
     });
   }
 
-  async updateStatus(id: string, data: UpdateTicketStatusData) {
+  async updateStatus(id: number, data: UpdateTicketStatusData) {
     return prisma.ticket.update({
       where: { id },
       data,

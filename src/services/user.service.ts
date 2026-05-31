@@ -1,3 +1,4 @@
+import { AppError } from "../errors/AppError";
 import { userRepository } from "../repositories/user.repository";
 
 type CreateUserInput = {
@@ -10,25 +11,16 @@ type UpdateUserInput = {
   email?: string;
 };
 
-class AppError extends Error {
-  statusCode: number;
-
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
-
 class UserService {
   async create(data: CreateUserInput) {
     if (!data.name || !data.email) {
-      throw new AppError("Name and email are required.", 400);
+      throw new AppError("Name and email are required");
     }
 
     const emailInUse = await userRepository.findByEmail(data.email);
 
     if (emailInUse) {
-      throw new AppError("Email already in use.", 400);
+      throw new AppError("Email already in use");
     }
 
     return userRepository.create({
@@ -41,32 +33,40 @@ class UserService {
     return userRepository.findAll();
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
+    if (Number.isNaN(id)) {
+      throw new AppError("Invalid user id");
+    }
+
     const user = await userRepository.findById(id);
 
     if (!user) {
-      throw new AppError("User not found.", 404);
+      throw new AppError("User not found", 404);
     }
 
     return user;
   }
 
-  async update(id: string, data: UpdateUserInput) {
+  async update(id: number, data: UpdateUserInput) {
+    if (Number.isNaN(id)) {
+      throw new AppError("Invalid user id");
+    }
+
     const user = await userRepository.findById(id);
 
     if (!user) {
-      throw new AppError("User not found.", 404);
+      throw new AppError("User not found", 404);
     }
 
     if (!data.name && !data.email) {
-      throw new AppError("Name or email must be provided.", 400);
+      throw new AppError("Name or email must be provided");
     }
 
     if (data.email) {
       const emailInUse = await userRepository.findByEmail(data.email);
 
       if (emailInUse && emailInUse.id !== id) {
-        throw new AppError("Email already in use.", 400);
+        throw new AppError("Email already in use");
       }
     }
 
@@ -76,11 +76,15 @@ class UserService {
     });
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
+    if (Number.isNaN(id)) {
+      throw new AppError("Invalid user id");
+    }
+
     const user = await userRepository.findById(id);
 
     if (!user) {
-      throw new AppError("User not found.", 404);
+      throw new AppError("User not found", 404);
     }
 
     await userRepository.delete(id);
@@ -89,4 +93,4 @@ class UserService {
 
 const userService = new UserService();
 
-export { AppError, userService };
+export { userService };

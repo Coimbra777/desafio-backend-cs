@@ -1,61 +1,60 @@
-import { Request, Response } from "express";
-import { AppError, ticketService } from "../services/ticket.service";
+import { NextFunction, Request, Response } from "express";
+import { ticketService } from "../services/ticket.service";
 
 type TicketParams = {
   id: string;
 };
 
 class TicketController {
-  async create(request: Request, response: Response) {
+  async create(request: Request, response: Response, next: NextFunction) {
     try {
       const ticket = await ticketService.create(request.body);
 
       return response.status(201).json(ticket);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async findAll(_request: Request, response: Response) {
+  async findAll(_request: Request, response: Response, next: NextFunction) {
     try {
       const tickets = await ticketService.findAll();
 
       return response.status(200).json(tickets);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async findById(request: Request<TicketParams>, response: Response) {
+  async findById(
+    request: Request<TicketParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
-      const ticket = await ticketService.findById(request.params.id);
+      const ticket = await ticketService.findById(Number(request.params.id));
 
       return response.status(200).json(ticket);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
   }
 
-  async updateStatus(request: Request<TicketParams>, response: Response) {
+  async updateStatus(
+    request: Request<TicketParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
-      const ticket = await ticketService.updateStatus(request.params.id, request.body);
+      const ticket = await ticketService.updateStatus(
+        Number(request.params.id),
+        request.body,
+      );
 
       return response.status(200).json(ticket);
     } catch (error) {
-      return this.handleError(error, response);
+      return next(error);
     }
-  }
-
-  private handleError(error: unknown, response: Response) {
-    if (error instanceof AppError) {
-      return response.status(error.statusCode).json({
-        message: error.message,
-      });
-    }
-
-    return response.status(500).json({
-      message: "Internal server error.",
-    });
   }
 }
 

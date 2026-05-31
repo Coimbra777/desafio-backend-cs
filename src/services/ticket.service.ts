@@ -1,10 +1,11 @@
+import { AppError } from "../errors/AppError";
 import { userRepository } from "../repositories/user.repository";
 import { ticketRepository } from "../repositories/ticket.repository";
 import { classifyTicket } from "../utils/classify-ticket";
 
 type CreateTicketInput = {
   description?: string;
-  userId?: string;
+  userId?: number | string;
 };
 
 type UpdateTicketStatusInput = {
@@ -13,26 +14,25 @@ type UpdateTicketStatusInput = {
 
 const allowedTicketStatus = ["open", "in_progress", "closed"];
 
-class AppError extends Error {
-  statusCode: number;
-
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
-
 class TicketService {
   async create(data: CreateTicketInput) {
     if (!data.description || !data.description.trim()) {
-      throw new AppError("Description is required.", 400);
+      throw new AppError("Description is required");
     }
 
+    let userId: number | undefined;
+
     if (data.userId) {
-      const user = await userRepository.findById(data.userId);
+      userId = Number(data.userId);
+
+      if (Number.isNaN(userId)) {
+        throw new AppError("Invalid user id");
+      }
+
+      const user = await userRepository.findById(userId);
 
       if (!user) {
-        throw new AppError("User not found.", 404);
+        throw new AppError("User not found", 404);
       }
     }
 
@@ -43,7 +43,7 @@ class TicketService {
       channel,
       priority,
       status: "open",
-      userId: data.userId,
+      userId,
     });
   }
 
@@ -51,7 +51,11 @@ class TicketService {
     return ticketRepository.findAll();
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
+    if (Number.isNaN(id)) {
+      throw new AppError("Invalid ticket id");
+    }
+
     const ticket = await ticketRepository.findById(id);
 
     if (!ticket) {
@@ -61,13 +65,17 @@ class TicketService {
     return ticket;
   }
 
-  async updateStatus(id: string, data: UpdateTicketStatusInput) {
+  async updateStatus(id: number, data: UpdateTicketStatusInput) {
+    if (Number.isNaN(id)) {
+      throw new AppError("Invalid ticket id");
+    }
+
     if (!data.status) {
-      throw new AppError("Status is required", 400);
+      throw new AppError("Status is required");
     }
 
     if (!allowedTicketStatus.includes(data.status)) {
-      throw new AppError("Invalid status", 400);
+      throw new AppError("Invalid status");
     }
 
     const ticket = await ticketRepository.findById(id);
@@ -84,4 +92,4 @@ class TicketService {
 
 const ticketService = new TicketService();
 
-export { AppError, ticketService };
+export { ticketService };

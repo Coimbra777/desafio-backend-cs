@@ -3,20 +3,20 @@ import { userController } from "../controllers/user.controller";
 
 const userRoutes = Router();
 
-userRoutes.post("/", (request, response) =>
-  userController.create(request, response),
+userRoutes.post("/", (request, response, next) =>
+  userController.create(request, response, next),
 );
-userRoutes.get("/", (request, response) =>
-  userController.findAll(request, response),
+userRoutes.get("/", (request, response, next) =>
+  userController.findAll(request, response, next),
 );
-userRoutes.get("/:id", (request, response) =>
-  userController.findById(request, response),
+userRoutes.get("/:id", (request, response, next) =>
+  userController.findById(request, response, next),
 );
-userRoutes.put("/:id", (request, response) =>
-  userController.update(request, response),
+userRoutes.put("/:id", (request, response, next) =>
+  userController.update(request, response, next),
 );
-userRoutes.delete("/:id", (request, response) =>
-  userController.delete(request, response),
+userRoutes.delete("/:id", (request, response, next) =>
+  userController.delete(request, response, next),
 );
 
 export { userRoutes };
