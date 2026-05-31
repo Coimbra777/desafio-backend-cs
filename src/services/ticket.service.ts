@@ -7,6 +7,12 @@ type CreateTicketInput = {
   userId?: string;
 };
 
+type UpdateTicketStatusInput = {
+  status?: string;
+};
+
+const allowedTicketStatus = ["open", "in_progress", "closed"];
+
 class AppError extends Error {
   statusCode: number;
 
@@ -38,6 +44,40 @@ class TicketService {
       priority,
       status: "open",
       userId: data.userId,
+    });
+  }
+
+  async findAll() {
+    return ticketRepository.findAll();
+  }
+
+  async findById(id: string) {
+    const ticket = await ticketRepository.findById(id);
+
+    if (!ticket) {
+      throw new AppError("Ticket not found", 404);
+    }
+
+    return ticket;
+  }
+
+  async updateStatus(id: string, data: UpdateTicketStatusInput) {
+    if (!data.status) {
+      throw new AppError("Status is required", 400);
+    }
+
+    if (!allowedTicketStatus.includes(data.status)) {
+      throw new AppError("Invalid status", 400);
+    }
+
+    const ticket = await ticketRepository.findById(id);
+
+    if (!ticket) {
+      throw new AppError("Ticket not found", 404);
+    }
+
+    return ticketRepository.updateStatus(id, {
+      status: data.status,
     });
   }
 }
