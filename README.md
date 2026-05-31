@@ -24,8 +24,10 @@ Para rodar o projeto localmente, você precisa ter instalado:
 
 ## Configuração de ambiente
 
-1. Copie o arquivo `.env.example` para `.env`.
-2. Revise os valores das variáveis de ambiente.
+Ao rodar o projeto com Docker Compose, não é necessário criar um `.env` para a API.
+O próprio `docker-compose.yml` já fornece as variáveis necessárias para o container da aplicação.
+
+O arquivo `.env.example` fica no projeto apenas como referência para desenvolvimento e testes locais.
 
 Exemplo:
 
@@ -41,41 +43,54 @@ PORT=3000
 
 ## Como rodar o projeto
 
-1. Instale as dependências:
+O modo oficial de execução deste projeto é com Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Esse comando:
+
+- sobe a API
+- sobe o PostgreSQL
+- aplica as migrations com `prisma migrate deploy`
+
+Depois disso, a API fica disponível em:
+
+```text
+http://localhost:3000
+```
+
+Você pode validar com:
+
+```bash
+curl http://localhost:3000/health
+```
+
+### Diferença entre as URLs do banco
+
+- Para desenvolvimento e testes locais, o PostgreSQL fica acessível em `localhost:5433`
+- Dentro do Docker Compose, a API usa `postgres:5432`
+
+Isso acontece porque `localhost:5433` é a porta exposta na máquina local, enquanto `postgres:5432` é o endereço interno do serviço no Docker Compose.
+
+## Como rodar os testes
+
+Os testes fazem parte da rotina de desenvolvimento e precisam de um PostgreSQL disponível via Docker.
+
+1. Suba o PostgreSQL:
+
+```bash
+docker compose up -d postgres
+```
+
+2. Instale as dependências:
 
 ```bash
 npm install
 ```
 
-2. Suba o PostgreSQL com Docker:
-
-```bash
-docker compose up -d
-```
-
-3. Aplique as migrations no banco:
-
-```bash
-npx prisma migrate dev
-```
-
-4. Inicie o servidor em modo desenvolvimento:
-
-```bash
-npm run dev
-```
-
-A API ficará disponível em `http://localhost:3000`.
-
-## Como rodar os testes
-
-1. Suba o PostgreSQL:
-
-```bash
-docker compose up -d
-```
-
-2. Execute os testes:
+3. Execute os testes:
 
 ```bash
 npm test
@@ -83,10 +98,10 @@ npm test
 
 ## Scripts disponíveis
 
-- `npm run dev`: inicia a aplicação em desenvolvimento com `ts-node-dev`.
+- `npm run dev`: útil para desenvolvimento local com `ts-node-dev`.
 - `npm run build`: compila o projeto TypeScript para a pasta `dist`.
 - `npm start`: executa a versão compilada da aplicação.
-- `npm test`: sincroniza o schema no banco de teste local e executa os testes com Jest.
+- `npm test`: útil para testes locais, sincroniza o schema no banco e executa os testes com Jest.
 
 ## Endpoints
 
