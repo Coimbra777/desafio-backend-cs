@@ -56,6 +56,37 @@ class TicketController {
       return next(error);
     }
   }
+
+  async update(
+    request: Request<TicketParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const ticket = await ticketService.update(
+        Number(request.params.id),
+        request.body,
+      );
+
+      return response.status(200).json(ticket);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async delete(
+    request: Request<TicketParams>,
+    response: Response,
+    next: NextFunction,
+  ) {
+    try {
+      await ticketService.delete(Number(request.params.id));
+
+      return response.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 const ticketController = new TicketController();

@@ -12,8 +12,14 @@ ticketRoutes.get("/", (request, response, next) =>
 ticketRoutes.get("/:id", (request, response, next) =>
   ticketController.findById(request, response, next),
 );
+ticketRoutes.put("/:id", (request, response, next) =>
+  ticketController.update(request, response, next),
+);
 ticketRoutes.put("/:id/status", (request, response, next) =>
   ticketController.updateStatus(request, response, next),
+);
+ticketRoutes.delete("/:id", (request, response, next) =>
+  ticketController.delete(request, response, next),
 );
 
 export { ticketRoutes };
