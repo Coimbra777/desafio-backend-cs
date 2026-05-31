@@ -1,6 +1,7 @@
 type TicketClassification = {
   channel: string;
   priority: string;
+  requiresManualReview: boolean;
 };
 
 const MIN_DESCRIPTION_LENGTH = 3;
@@ -62,6 +63,7 @@ function classifyTicket(description: string): TicketClassification {
     return {
       channel: "fora_do_escopo",
       priority: "baixa",
+      requiresManualReview: true,
     };
   }
 
@@ -69,6 +71,7 @@ function classifyTicket(description: string): TicketClassification {
     return {
       channel: "ouvidoria",
       priority: "alta",
+      requiresManualReview: false,
     };
   }
 
@@ -76,6 +79,7 @@ function classifyTicket(description: string): TicketClassification {
     return {
       channel: "sac",
       priority: "baixa",
+      requiresManualReview: false,
     };
   }
 
@@ -83,6 +87,7 @@ function classifyTicket(description: string): TicketClassification {
     return {
       channel: "suporte_tecnico",
       priority: "media",
+      requiresManualReview: false,
     };
   }
 
@@ -90,12 +95,14 @@ function classifyTicket(description: string): TicketClassification {
     return {
       channel: "financeiro",
       priority: "media",
+      requiresManualReview: false,
     };
   }
 
   return {
     channel: "fora_do_escopo",
     priority: "baixa",
+    requiresManualReview: true,
   };
 }
 

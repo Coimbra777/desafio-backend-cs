@@ -2,6 +2,7 @@ import { AppError } from "../errors/AppError";
 import { userRepository } from "../repositories/user.repository";
 import { ticketRepository } from "../repositories/ticket.repository";
 import { classifyTicket } from "../utils/classify-ticket";
+import { isValidId } from "../utils/is-valid-id";
 
 type CreateTicketInput = {
   description?: string;
@@ -27,10 +28,10 @@ class TicketService {
 
     let userId: number | undefined;
 
-    if (data.userId) {
+    if (data.userId !== undefined && data.userId !== null) {
       userId = Number(data.userId);
 
-      if (Number.isNaN(userId)) {
+      if (!isValidId(userId)) {
         throw new AppError("Invalid user id");
       }
 
@@ -41,13 +42,16 @@ class TicketService {
       }
     }
 
-    const { channel, priority } = classifyTicket(data.description);
+    const { channel, priority, requiresManualReview } = classifyTicket(
+      data.description,
+    );
 
     return ticketRepository.create({
       description: data.description.trim(),
       channel,
       priority,
       status: "open",
+      requiresManualReview,
       userId,
     });
   }
@@ -57,7 +61,7 @@ class TicketService {
   }
 
   async findById(id: number) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid ticket id");
     }
 
@@ -71,7 +75,7 @@ class TicketService {
   }
 
   async updateStatus(id: number, data: UpdateTicketStatusInput) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid ticket id");
     }
 
@@ -95,7 +99,7 @@ class TicketService {
   }
 
   async update(id: number, data: UpdateTicketInput) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid ticket id");
     }
 
@@ -109,6 +113,7 @@ class TicketService {
       description?: string;
       channel?: string;
       priority?: string;
+      requiresManualReview?: boolean;
       userId?: number;
     } = {};
 
@@ -119,17 +124,20 @@ class TicketService {
         throw new AppError("Description is required");
       }
 
-      const { channel, priority } = classifyTicket(description);
+      const { channel, priority, requiresManualReview } = classifyTicket(
+        description,
+      );
 
       updateData.description = description;
       updateData.channel = channel;
       updateData.priority = priority;
+      updateData.requiresManualReview = requiresManualReview;
     }
 
-    if (data.userId !== undefined) {
+    if (data.userId !== undefined && data.userId !== null) {
       const userId = Number(data.userId);
 
-      if (Number.isNaN(userId)) {
+      if (!isValidId(userId)) {
         throw new AppError("Invalid user id");
       }
 
@@ -146,7 +154,7 @@ class TicketService {
   }
 
   async delete(id: number) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid ticket id");
     }
 

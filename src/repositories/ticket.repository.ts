@@ -5,6 +5,7 @@ type CreateTicketData = {
   channel: string;
   priority: string;
   status: string;
+  requiresManualReview: boolean;
   userId?: number;
 };
 
@@ -16,6 +17,7 @@ type UpdateTicketData = {
   description?: string;
   channel?: string;
   priority?: string;
+  requiresManualReview?: boolean;
   userId?: number;
 };
 

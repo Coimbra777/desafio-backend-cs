@@ -5,6 +5,7 @@ describe("classifyTicket", () => {
     expect(classifyTicket("Quero denunciar um caso de assédio")).toEqual({
       channel: "ouvidoria",
       priority: "alta",
+      requiresManualReview: false,
     });
   });
 
@@ -12,6 +13,7 @@ describe("classifyTicket", () => {
     expect(classifyTicket("Quero cancelar minha assinatura")).toEqual({
       channel: "sac",
       priority: "baixa",
+      requiresManualReview: false,
     });
   });
 
@@ -19,6 +21,7 @@ describe("classifyTicket", () => {
     expect(classifyTicket("Estou com erro de acesso ao sistema")).toEqual({
       channel: "suporte_tecnico",
       priority: "media",
+      requiresManualReview: false,
     });
   });
 
@@ -26,6 +29,7 @@ describe("classifyTicket", () => {
     expect(classifyTicket("Preciso de reembolso de uma cobrança")).toEqual({
       channel: "financeiro",
       priority: "media",
+      requiresManualReview: false,
     });
   });
 
@@ -33,6 +37,7 @@ describe("classifyTicket", () => {
     expect(classifyTicket("")).toEqual({
       channel: "fora_do_escopo",
       priority: "baixa",
+      requiresManualReview: true,
     });
   });
 
@@ -42,6 +47,7 @@ describe("classifyTicket", () => {
     ).toEqual({
       channel: "fora_do_escopo",
       priority: "baixa",
+      requiresManualReview: true,
     });
   });
 });

@@ -1,5 +1,6 @@
 import { AppError } from "../errors/AppError";
 import { userRepository } from "../repositories/user.repository";
+import { isValidId } from "../utils/is-valid-id";
 
 type CreateUserInput = {
   name?: string;
@@ -34,7 +35,7 @@ class UserService {
   }
 
   async findById(id: number) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid user id");
     }
 
@@ -48,7 +49,7 @@ class UserService {
   }
 
   async update(id: number, data: UpdateUserInput) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid user id");
     }
 
@@ -77,7 +78,7 @@ class UserService {
   }
 
   async delete(id: number) {
-    if (Number.isNaN(id)) {
+    if (!isValidId(id)) {
       throw new AppError("Invalid user id");
     }
 

@@ -148,7 +148,10 @@ Content-Type: application/json
 }
 ```
 
-Existe também o arquivo [requests.http](/home/coimbra/projetos/testes/teste-backend-cs/requests.http) com exemplos prontos para testar a API.
+Existe também o arquivo [requests.http](./requests.http) com exemplos prontos para testar a API.
+
+Também foi adicionada a collection Postman em [postman/contato-seguro-api.postman_collection.json](./postman/contato-seguro-api.postman_collection.json).
+Para usar, abra o Postman, clique em `Import`, selecione o arquivo da collection e execute as requisições usando as variáveis `baseUrl`, `userId` e `ticketId`.
 
 ## Regras de classificação dos tickets
 
@@ -158,7 +161,7 @@ As classificações são feitas automaticamente com base em palavras-chave na de
 - `sac`: assinatura, cancelamento, atendimento, produto, entrega, reclamação => prioridade `baixa`
 - `suporte_tecnico`: erro, acesso, bug, sistema, falha, indisponibilidade, login, senha => prioridade `media`
 - `financeiro`: cobrança, pagamento, reembolso, boleto, nota fiscal, fatura => prioridade `media`
-- `fora_do_escopo`: texto vazio, curto ou sem palavras reconhecidas => prioridade `baixa`
+- `fora_do_escopo`: texto vazio, curto ou sem palavras reconhecidas => prioridade `baixa` e `requiresManualReview: true`
 
 ## Estrutura de pastas
 
@@ -172,6 +175,7 @@ src/
   errors/
   middlewares/
 prisma/
+postman/
 tests/
 ```
 
@@ -182,9 +186,12 @@ tests/
 - Classificação por regras determinísticas para manter previsibilidade e facilitar validação automatizada.
 - `AppError` centralizado para padronizar o tratamento de erros esperados.
 - `Supertest` para validar os endpoints HTTP de forma integrada.
+- Logs estruturados simples em JSON no console, sem dependências extras.
 
 ## Observação sobre IA
 
 Neste desafio, a classificação dos tickets foi implementada com regras determinísticas baseadas em palavras-chave. Essa abordagem foi escolhida por ser simples, previsível e fácil de testar.
 
 Como evolução, essa etapa poderia ser substituída por IA usando um prompt estruturado que recebesse a descrição do ticket e retornasse um JSON com `channel` e `priority`. Isso permitiria lidar melhor com variações de linguagem e contextos mais complexos, mantendo uma saída padronizada para a API.
+
+O projeto também inclui [docs/ai-classification-prompt.md](./docs/ai-classification-prompt.md) com uma sugestão de prompt para essa evolução futura.

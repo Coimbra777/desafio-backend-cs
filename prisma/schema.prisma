@@ -24,6 +24,7 @@ model Ticket {
   channel     String
   status      String
   priority    String
+  requiresManualReview Boolean @default(false)
   userId      Int?
   user        User?    @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())

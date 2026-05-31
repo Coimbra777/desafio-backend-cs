@@ -22,6 +22,7 @@ describe("Ticket routes", () => {
       description: "Quero denunciar um caso de assédio",
       channel: "ouvidoria",
       priority: "alta",
+      requiresManualReview: false,
       status: "open",
       userId: null,
     });
@@ -44,6 +45,7 @@ describe("Ticket routes", () => {
     expect(response.body).toMatchObject({
       userId: user.id,
       channel: "suporte_tecnico",
+      requiresManualReview: false,
     });
     expect(response.body.user).toMatchObject({
       id: user.id,
@@ -70,6 +72,31 @@ describe("Ticket routes", () => {
     expect(response.status).toBe(404);
     expect(response.body).toEqual({
       message: "User not found",
+    });
+  });
+
+  it("POST /tickets with invalid userId should return 400", async () => {
+    const response = await request(app).post("/tickets").send({
+      description: "Estou com erro de acesso ao sistema",
+      userId: 0,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Invalid user id",
+    });
+  });
+
+  it("POST /tickets should mark fora_do_escopo as manual review", async () => {
+    const response = await request(app).post("/tickets").send({
+      description: "Preciso falar com alguém",
+    });
+
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject({
+      channel: "fora_do_escopo",
+      priority: "baixa",
+      requiresManualReview: true,
     });
   });
 
@@ -120,6 +147,7 @@ describe("Ticket routes", () => {
       description: "Quero cancelar minha assinatura",
       channel: "sac",
       priority: "baixa",
+      requiresManualReview: false,
       status: "open",
     });
   });
@@ -191,7 +219,53 @@ describe("Ticket routes", () => {
       description: "Preciso de reembolso de uma cobrança",
       channel: "financeiro",
       priority: "media",
+      requiresManualReview: false,
       status: "open",
+    });
+  });
+
+  it("PUT /tickets/:id with invalid userId should return 400", async () => {
+    const ticket = await prisma.ticket.create({
+      data: {
+        description: "Estou com erro de acesso ao sistema",
+        channel: "suporte_tecnico",
+        priority: "media",
+        requiresManualReview: false,
+        status: "open",
+      },
+    });
+
+    const response = await request(app).put(`/tickets/${ticket.id}`).send({
+      userId: 0,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Invalid user id",
+    });
+  });
+
+  it("PUT /tickets/:id should recalculate manual review for fora_do_escopo", async () => {
+    const ticket = await prisma.ticket.create({
+      data: {
+        description: "Estou com erro de acesso ao sistema",
+        channel: "suporte_tecnico",
+        priority: "media",
+        requiresManualReview: false,
+        status: "open",
+      },
+    });
+
+    const response = await request(app).put(`/tickets/${ticket.id}`).send({
+      description: "Preciso falar com alguém",
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      id: ticket.id,
+      channel: "fora_do_escopo",
+      priority: "baixa",
+      requiresManualReview: true,
     });
   });
 

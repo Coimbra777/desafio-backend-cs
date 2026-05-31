@@ -63,6 +63,14 @@ Content-Type: application/json
   "userId": 1
 }
 
+### Tickets - Create Fora Do Escopo
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+
+{
+  "description": "Preciso falar com alguém"
+}
+
 ### Tickets - List
 GET {{baseUrl}}/tickets
 
