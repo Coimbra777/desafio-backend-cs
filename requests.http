@@ -1,0 +1,89 @@
+@baseUrl = http://localhost:3000
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Users - Create
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Maria Silva",
+  "email": "maria@example.com"
+}
+
+### Users - List
+GET {{baseUrl}}/users
+
+### Users - Get By Id
+GET {{baseUrl}}/users/1
+
+### Users - Update
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+  "name": "Maria Souza",
+  "email": "maria.souza@example.com"
+}
+
+### Users - Delete
+DELETE {{baseUrl}}/users/1
+
+### Tickets - Create Ouvidoria
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+
+{
+  "description": "Quero denunciar um caso de assédio"
+}
+
+### Tickets - Create Suporte Tecnico
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+
+{
+  "description": "Estou com erro de acesso ao sistema"
+}
+
+### Tickets - Create Financeiro
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+
+{
+  "description": "Preciso de reembolso de uma cobrança"
+}
+
+### Tickets - Create With UserId
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+
+{
+  "description": "Quero cancelar minha assinatura",
+  "userId": 1
+}
+
+### Tickets - List
+GET {{baseUrl}}/tickets
+
+### Tickets - Get By Id
+GET {{baseUrl}}/tickets/1
+
+### Tickets - Update Status
+PUT {{baseUrl}}/tickets/1/status
+Content-Type: application/json
+
+{
+  "status": "in_progress"
+}
+
+### Tickets - Update Description
+PUT {{baseUrl}}/tickets/1
+Content-Type: application/json
+
+{
+  "description": "Preciso de reembolso de uma cobrança"
+}
+
+### Tickets - Delete
+DELETE {{baseUrl}}/tickets/1

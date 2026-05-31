@@ -62,9 +62,7 @@ class UserController {
     try {
       await userService.delete(Number(request.params.id));
 
-      return response.status(200).json({
-        message: "User deleted successfully.",
-      });
+      return response.status(204).send();
     } catch (error) {
       return next(error);
     }
