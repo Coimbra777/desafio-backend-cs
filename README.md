@@ -131,6 +131,12 @@ Content-Type: application/json
 }
 ```
 
+## Como parar a aplicação
+
+```bash
+docker compose down -v
+```
+
 ## Arquivos úteis
 
 - [requests.http](./requests.http)
