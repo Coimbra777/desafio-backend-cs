@@ -1,7 +1,6 @@
-# Desafio Técnico - API de Triagem de Atendimentos
+# API de Triagem de Atendimentos
 
-API REST para cadastro de usuários e para criação e consulta de tickets.
-Os tickets são classificados automaticamente por canal, prioridade e revisão manual, e permitem atualização de status.
+API REST para cadastro de usuários e para criação, consulta e atualização de status de tickets.
 
 ## Tecnologias utilizadas
 
@@ -13,8 +12,6 @@ Os tickets são classificados automaticamente por canal, prioridade e revisão m
 - Docker Compose
 - Jest
 - Supertest
-
-## Passo a passo para rodar na sua máquina
 
 Requisitos:
 
@@ -56,23 +53,17 @@ Esse comando sobe:
 
 - API
 - PostgreSQL
-- migrations com `prisma migrate deploy`
-
-API disponível em:
-
-```text
-http://localhost:3000
-```
+- migrations com `prisma migrate deploy`API disponível em `http://localhost:3000`
 
 Health check:
 
-```bash
-curl http://localhost:3000/health
+```text
+GET /health
 ```
 
-## Testes
+O Docker Compose lê o arquivo `.env` automaticamente. A `DATABASE_URL` usa `postgres:5432` porque a API roda dentro do Docker, e `POSTGRES_PORT` expõe o banco para a máquina local.
 
-Para rodar os testes localmente:
+## Como rodar os testes
 
 ```bash
 docker compose up -d postgres
@@ -80,44 +71,68 @@ npm install
 npm test
 ```
 
-## Scripts úteis
-
-- `npm run build`
-- `npm start`
-- `npm test`
-- `npm run dev`
-
 ## Endpoints
 
-### Health
-
 - `GET /health`
-
-### Users
-
 - `POST /users`
 - `GET /users`
 - `GET /users/:id`
 - `PUT /users/:id`
 - `DELETE /users/:id`
 
-### Tickets
-
 - `POST /tickets`
 - `GET /tickets`
 - `GET /tickets/:id`
 - `PUT /tickets/:id/status`
 
-## Regras de classificação
+## Regras de classificação dos tickets
 
-- `ouvidoria` => prioridade `alta`
-- `sac` => prioridade `baixa`
-- `suporte_tecnico` => prioridade `media`
-- `financeiro` => prioridade `media`
-- `fora_do_escopo` => prioridade `baixa` e `requiresManualReview: true`
+- `ouvidoria`
+- `sac`
+- `suporte_tecnico`
+- `financeiro`
+- `fora_do_escopo`
+
+Tickets classificados como `fora_do_escopo` recebem `requiresManualReview: true`.
+
+## Exemplos de requisição
+
+Criar usuário:
+
+```http
+POST /users
+Content-Type: application/json
+
+{
+  "name": "Teste",
+  "email": "teste@gmail.com"
+}
+```
+
+Criar ticket:
+
+```http
+POST /tickets
+Content-Type: application/json
+
+{
+  "description": "Estou com erro de acesso ao sistema"
+}
+```
+
+Atualizar status do ticket:
+
+```http
+PUT /tickets/1/status
+Content-Type: application/json
+
+{
+  "status": "in_progress"
+}
+```
 
 ## Arquivos úteis
 
-- [requests.http](./requests.http): exemplos de requisições
-- [postman/contato-seguro-api.postman_collection.json](./postman/contato-seguro-api.postman_collection.json): collection Postman
-- [docs/ai-classification-prompt.md](./docs/ai-classification-prompt.md): sugestão de evolução futura com IA
+- [requests.http](./requests.http)
+- [postman/contato-seguro-api.postman_collection.json](./postman/contato-seguro-api.postman_collection.json)
+- [docs/ai-classification-prompt.md](./docs/ai-classification-prompt.md)
