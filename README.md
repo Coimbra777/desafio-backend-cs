@@ -210,6 +210,12 @@ Resposta:
 docker compose down -v
 ```
 
+## Como ver logs das requisições
+
+```bash
+docker compose logs -f api
+```
+
 ## Arquivos úteis
 
 - [requests.http](./requests.http)

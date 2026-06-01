@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
-function requestLogger(request: Request, response: Response, next: NextFunction) {
+function requestLogger(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   if (process.env.NODE_ENV === "test") {
     next();
     return;
