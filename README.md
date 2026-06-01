@@ -23,7 +23,7 @@ Clone o projeto:
 git clone git@github.com:Coimbra777/desafio-backend-cs.git
 ```
 
-Depois acesse:
+Depois acesse e abra no seu editor de código-fonte:
 
 ```bash
 cd desafio-backend-cs/
