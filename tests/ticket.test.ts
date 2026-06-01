@@ -63,6 +63,17 @@ describe("Ticket routes", () => {
     });
   });
 
+  it("POST /tickets with blank description should return 400", async () => {
+    const response = await request(app).post("/tickets").send({
+      description: "   ",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Description is required",
+    });
+  });
+
   it("POST /tickets with non-existent userId should return 404", async () => {
     const response = await request(app).post("/tickets").send({
       description: "Estou com erro de acesso ao sistema",
@@ -205,6 +216,26 @@ describe("Ticket routes", () => {
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: "Invalid status",
+    });
+  });
+
+  it("PUT /tickets/:id/status with blank status should return 400", async () => {
+    const ticket = await prisma.ticket.create({
+      data: {
+        description: "Estou com erro no sistema",
+        channel: "suporte_tecnico",
+        priority: "media",
+        status: "open",
+      },
+    });
+
+    const response = await request(app).put(`/tickets/${ticket.id}/status`).send({
+      status: "   ",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Status is required",
     });
   });
 });

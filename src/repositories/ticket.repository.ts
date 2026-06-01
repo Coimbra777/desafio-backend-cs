@@ -1,16 +1,21 @@
+import type {
+  TicketChannel,
+  TicketPriority,
+  TicketStatus,
+} from "../constants/ticket";
 import { prisma } from "../lib/prisma";
 
 type CreateTicketData = {
   description: string;
-  channel: string;
-  priority: string;
-  status: string;
+  channel: TicketChannel;
+  priority: TicketPriority;
+  status: TicketStatus;
   requiresManualReview: boolean;
   userId?: number;
 };
 
 type UpdateTicketStatusData = {
-  status: string;
+  status: TicketStatus;
 };
 
 const ticketUserSelect = {

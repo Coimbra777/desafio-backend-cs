@@ -1,8 +1,10 @@
+import { TICKET_STATUSES, type TicketStatus } from "../constants/ticket";
 import { AppError } from "../errors/AppError";
 import { userRepository } from "../repositories/user.repository";
 import { ticketRepository } from "../repositories/ticket.repository";
 import { classifyTicket } from "../utils/classify-ticket";
 import { isValidId } from "../utils/is-valid-id";
+import { normalizeOptionalString } from "../utils/input-validation";
 
 type CreateTicketInput = {
   description?: string;
@@ -13,11 +15,11 @@ type UpdateTicketStatusInput = {
   status?: string;
 };
 
-const allowedTicketStatus = ["open", "in_progress", "closed"];
-
 class TicketService {
   async create(data: CreateTicketInput) {
-    if (!data.description || !data.description.trim()) {
+    const description = normalizeOptionalString(data.description);
+
+    if (!description) {
       throw new AppError("Description is required");
     }
 
@@ -37,12 +39,10 @@ class TicketService {
       }
     }
 
-    const { channel, priority, requiresManualReview } = classifyTicket(
-      data.description,
-    );
+    const { channel, priority, requiresManualReview } = classifyTicket(description);
 
     return ticketRepository.create({
-      description: data.description.trim(),
+      description,
       channel,
       priority,
       status: "open",
@@ -74,11 +74,13 @@ class TicketService {
       throw new AppError("Invalid ticket id");
     }
 
-    if (!data.status) {
+    const status = normalizeOptionalString(data.status);
+
+    if (!status) {
       throw new AppError("Status is required");
     }
 
-    if (!allowedTicketStatus.includes(data.status)) {
+    if (!TICKET_STATUSES.includes(status as TicketStatus)) {
       throw new AppError("Invalid status");
     }
 
@@ -89,7 +91,7 @@ class TicketService {
     }
 
     return ticketRepository.updateStatus(id, {
-      status: data.status,
+      status: status as TicketStatus,
     });
   }
 }

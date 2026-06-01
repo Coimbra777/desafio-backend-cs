@@ -1,6 +1,8 @@
+import type { TicketChannel, TicketPriority } from "../constants/ticket";
+
 type TicketClassification = {
-  channel: string;
-  priority: string;
+  channel: TicketChannel;
+  priority: TicketPriority;
   requiresManualReview: boolean;
 };
 

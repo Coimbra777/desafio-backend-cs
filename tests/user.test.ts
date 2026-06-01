@@ -141,4 +141,46 @@ describe("User routes", () => {
       message: "Email already in use",
     });
   });
+
+  it("POST /users with blank name should return 400", async () => {
+    const response = await request(app).post("/users").send({
+      name: "   ",
+      email: "maria@example.com",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Name and email are required",
+    });
+  });
+
+  it("POST /users with invalid email should return 400", async () => {
+    const response = await request(app).post("/users").send({
+      name: "Maria",
+      email: "email-invalido",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Invalid email",
+    });
+  });
+
+  it("PUT /users/:id with blank name should return 400", async () => {
+    const user = await prisma.user.create({
+      data: {
+        name: "Carlos",
+        email: "carlos@example.com",
+      },
+    });
+
+    const response = await request(app).put(`/users/${user.id}`).send({
+      name: "   ",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Name cannot be empty",
+    });
+  });
 });

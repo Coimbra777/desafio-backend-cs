@@ -1,6 +1,7 @@
 import { AppError } from "../errors/AppError";
 import { userRepository } from "../repositories/user.repository";
 import { isValidId } from "../utils/is-valid-id";
+import { isBlankString, isValidEmail, normalizeOptionalString } from "../utils/input-validation";
 
 type CreateUserInput = {
   name?: string;
@@ -14,19 +15,26 @@ type UpdateUserInput = {
 
 class UserService {
   async create(data: CreateUserInput) {
-    if (!data.name || !data.email) {
+    const name = normalizeOptionalString(data.name);
+    const email = normalizeOptionalString(data.email);
+
+    if (!name || !email) {
       throw new AppError("Name and email are required");
     }
 
-    const emailInUse = await userRepository.findByEmail(data.email);
+    if (!isValidEmail(email)) {
+      throw new AppError("Invalid email");
+    }
+
+    const emailInUse = await userRepository.findByEmail(email);
 
     if (emailInUse) {
       throw new AppError("Email already in use");
     }
 
     return userRepository.create({
-      name: data.name,
-      email: data.email,
+      name,
+      email,
     });
   }
 
@@ -59,12 +67,27 @@ class UserService {
       throw new AppError("User not found", 404);
     }
 
-    if (!data.name && !data.email) {
+    if (data.name === undefined && data.email === undefined) {
       throw new AppError("Name or email must be provided");
     }
 
-    if (data.email) {
-      const emailInUse = await userRepository.findByEmail(data.email);
+    const name = normalizeOptionalString(data.name);
+    const email = normalizeOptionalString(data.email);
+
+    if (data.name !== undefined && isBlankString(data.name)) {
+      throw new AppError("Name cannot be empty");
+    }
+
+    if (data.email !== undefined && !email) {
+      throw new AppError("Email cannot be empty");
+    }
+
+    if (email && !isValidEmail(email)) {
+      throw new AppError("Invalid email");
+    }
+
+    if (email) {
+      const emailInUse = await userRepository.findByEmail(email);
 
       if (emailInUse && emailInUse.id !== id) {
         throw new AppError("Email already in use");
@@ -72,8 +95,8 @@ class UserService {
     }
 
     return userRepository.update(id, {
-      name: data.name,
-      email: data.email,
+      name,
+      email,
     });
   }
 
