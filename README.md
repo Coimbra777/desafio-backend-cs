@@ -1,10 +1,9 @@
 # Desafio Técnico - API de Triagem de Atendimentos
 
-API REST para cadastro de usuários e tickets.  
-Os tickets são classificados automaticamente por canal, prioridade e revisão manual.  
-Projeto desenvolvido com Node.js, TypeScript, Express, Prisma e PostgreSQL.
+API REST para cadastro de usuários e tickets.
+Os tickets são classificados automaticamente por canal, prioridade e revisão manual.
 
-## Tecnologias
+## Tecnologias utilizadas
 
 - Node.js
 - TypeScript
@@ -14,6 +13,24 @@ Projeto desenvolvido com Node.js, TypeScript, Express, Prisma e PostgreSQL.
 - Docker Compose
 - Jest
 - Supertest
+
+## Passo a passo para rodar na sua máquina
+
+Requisitos:
+
+Ter git e docker instalados
+
+Clone o projeto:
+
+```bash
+git clone git@github.com:Coimbra777/desafio-backend-cs.git
+```
+
+Depois acesse:
+
+```bash
+cd desafio-backend-cs/
+```
 
 ## Como rodar com Docker
 
