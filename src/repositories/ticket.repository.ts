@@ -13,14 +13,6 @@ type UpdateTicketStatusData = {
   status: string;
 };
 
-type UpdateTicketData = {
-  description?: string;
-  channel?: string;
-  priority?: string;
-  requiresManualReview?: boolean;
-  userId?: number;
-};
-
 const ticketUserSelect = {
   id: true,
   name: true,
@@ -74,27 +66,9 @@ class TicketRepository {
       },
     });
   }
-
-  async update(id: number, data: UpdateTicketData) {
-    return prisma.ticket.update({
-      where: { id },
-      data,
-      include: {
-        user: {
-          select: ticketUserSelect,
-        },
-      },
-    });
-  }
-
-  async delete(id: number) {
-    return prisma.ticket.delete({
-      where: { id },
-    });
-  }
 }
 
 const ticketRepository = new TicketRepository();
 
 export { ticketRepository };
-export type { CreateTicketData, UpdateTicketStatusData, UpdateTicketData };
+export type { CreateTicketData, UpdateTicketStatusData };

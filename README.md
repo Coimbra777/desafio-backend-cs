@@ -1,7 +1,7 @@
 # Desafio Técnico - API de Triagem de Atendimentos
 
-API REST para cadastro de usuários e tickets.
-Os tickets são classificados automaticamente por canal, prioridade e revisão manual.
+API REST para cadastro de usuários e para criação e consulta de tickets.
+Os tickets são classificados automaticamente por canal, prioridade e revisão manual, e permitem atualização de status.
 
 ## Tecnologias utilizadas
 
@@ -31,6 +31,18 @@ Depois acesse:
 ```bash
 cd desafio-backend-cs/
 ```
+
+## Variáveis de ambiente
+
+Copie o arquivo de exemplo para `.env`:
+
+```bash
+cp .env.example .env
+```
+
+O Docker Compose lê o `.env` automaticamente na raiz do projeto.
+`DATABASE_URL` usa `postgres:5432` porque a API roda dentro do Docker e acessa o banco pelo nome do serviço.
+`POSTGRES_PORT` expõe o PostgreSQL para a máquina local, mantendo a porta `5433` fora do container.
 
 ## Como rodar com Docker
 
@@ -94,9 +106,7 @@ npm test
 - `POST /tickets`
 - `GET /tickets`
 - `GET /tickets/:id`
-- `PUT /tickets/:id`
 - `PUT /tickets/:id/status`
-- `DELETE /tickets/:id`
 
 ## Regras de classificação
 

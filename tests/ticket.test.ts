@@ -161,6 +161,15 @@ describe("Ticket routes", () => {
     });
   });
 
+  it("GET /tickets/:id with invalid id should return 400", async () => {
+    const response = await request(app).get("/tickets/0");
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Invalid ticket id",
+    });
+  });
+
   it('PUT /tickets/:id/status should update status to "in_progress"', async () => {
     const ticket = await prisma.ticket.create({
       data: {
@@ -196,111 +205,6 @@ describe("Ticket routes", () => {
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: "Invalid status",
-    });
-  });
-
-  it("PUT /tickets/:id should update description and recalculate channel and priority", async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
-        description: "Estou com erro de acesso ao sistema",
-        channel: "suporte_tecnico",
-        priority: "media",
-        status: "open",
-      },
-    });
-
-    const response = await request(app).put(`/tickets/${ticket.id}`).send({
-      description: "Preciso de reembolso de uma cobrança",
-    });
-
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({
-      id: ticket.id,
-      description: "Preciso de reembolso de uma cobrança",
-      channel: "financeiro",
-      priority: "media",
-      requiresManualReview: false,
-      status: "open",
-    });
-  });
-
-  it("PUT /tickets/:id with invalid userId should return 400", async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
-        description: "Estou com erro de acesso ao sistema",
-        channel: "suporte_tecnico",
-        priority: "media",
-        requiresManualReview: false,
-        status: "open",
-      },
-    });
-
-    const response = await request(app).put(`/tickets/${ticket.id}`).send({
-      userId: 0,
-    });
-
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({
-      message: "Invalid user id",
-    });
-  });
-
-  it("PUT /tickets/:id should recalculate manual review for fora_do_escopo", async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
-        description: "Estou com erro de acesso ao sistema",
-        channel: "suporte_tecnico",
-        priority: "media",
-        requiresManualReview: false,
-        status: "open",
-      },
-    });
-
-    const response = await request(app).put(`/tickets/${ticket.id}`).send({
-      description: "Preciso falar com alguém",
-    });
-
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({
-      id: ticket.id,
-      channel: "fora_do_escopo",
-      priority: "baixa",
-      requiresManualReview: true,
-    });
-  });
-
-  it("DELETE /tickets/:id should remove a ticket and return 204", async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
-        description: "Ticket para excluir",
-        channel: "sac",
-        priority: "baixa",
-        status: "open",
-      },
-    });
-
-    const response = await request(app).delete(`/tickets/${ticket.id}`);
-
-    expect(response.status).toBe(204);
-    expect(response.text).toBe("");
-  });
-
-  it("GET /tickets/:id after delete should return 404", async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
-        description: "Ticket para excluir",
-        channel: "sac",
-        priority: "baixa",
-        status: "open",
-      },
-    });
-
-    await request(app).delete(`/tickets/${ticket.id}`);
-    const response = await request(app).get(`/tickets/${ticket.id}`);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toEqual({
-      message: "Ticket not found",
     });
   });
 });

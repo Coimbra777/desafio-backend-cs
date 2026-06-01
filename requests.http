@@ -84,14 +84,3 @@ Content-Type: application/json
 {
   "status": "in_progress"
 }
-
-### Tickets - Update Description
-PUT {{baseUrl}}/tickets/1
-Content-Type: application/json
-
-{
-  "description": "Preciso de reembolso de uma cobrança"
-}
-
-### Tickets - Delete
-DELETE {{baseUrl}}/tickets/1
