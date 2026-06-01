@@ -86,7 +86,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Gabriel Coimbra\",\n  \"email\": \"gabriel@example.com\"\n}"
+              "raw": "{\n  \"name\": \"Teste\",\n  \"email\": \"teste@gmail.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users",
@@ -183,7 +183,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Gabriel F. Coimbra\",\n  \"email\": \"gabriel.f@example.com\"\n}"
+              "raw": "{\n  \"name\": \"Teste Atualizado\",\n  \"email\": \"teste.atualizado@gmail.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
