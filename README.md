@@ -61,6 +61,12 @@ Health check:
 GET /health
 ```
 
+## Comando para verificar se os containers subiram:
+
+```bash
+docker ps
+```
+
 O Docker Compose lê o arquivo `.env` automaticamente. A `DATABASE_URL` usa `postgres:5432` porque a API roda dentro do Docker, e `POSTGRES_PORT` expõe o banco para a máquina local.
 
 ## Como rodar os testes
